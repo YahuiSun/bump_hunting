@@ -5,7 +5,7 @@ The introduction of these files are as follows. For any enquiry, please feel fre
 
 # Datasets
 
-The DBLP dataset is crawled by ourselves from the DBLP website. Two files can be extracted from "DBLP.zip": "DBLP_1094k_keywords.txt" and "DBLP_1094k_collaborations.txt", which contain keywords of researhchers and collaborations between researchers respectively. There are 1,094,552 researhchers and 6,911,318 collaborations in total. This dataset is not small.   - ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `<b>You can probably find your name or your friends' names inside!</b>`
+The DBLP dataset is crawled by ourselves from the DBLP website. Two files can be extracted from "DBLP.zip": "DBLP_1094k_keywords.txt" and "DBLP_1094k_collaborations.txt", which contain keywords of researhchers and collaborations between researchers respectively. There are 1,094,552 researhchers and 6,911,318 collaborations in total. This dataset is not small.   ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `You can probably find your name or your friends' names inside!`
 
 1) DBLP_1094k_keywords.txt: The items in each line are: AuthorName, his or her keywords.
 2) DBLP_1094k_collaborations.txt: The items in each line are: Author1, Author2 (this is a collaboration; the way to calculate pairwise Jaccard distances is in our paper).
