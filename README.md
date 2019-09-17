@@ -6,15 +6,9 @@ The introduction of these files are as follows. For any enquiry, please feel fre
 # Datasets
 
 The DBLP dataset is crawled by ourselves from the DBLP website. Two files can be extracted from "DBLP.zip": "DBLP_1094k_keywords.txt" and "DBLP_1094k_collaborations.txt", which contain keywords of researhchers and collaborations between researchers respectively. There are 1,094,552 researhchers and 6,911,318 collaborations in total. This dataset is not small. <b>You can probably find your name or your friends' names inside!</b> 
-```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-```
+
 1) DBLP_1094k_keywords.txt: The items in each line are: AuthorName, his or her keywords.
 2) DBLP_1094k_collaborations.txt: The items in each line are: Author1, Author2 (this is a collaboration; the way to calculate pairwise Jaccard distances is in our paper).
-
 
 The Twitter and Flickr datasets were collected by Nikolakaki et al. for the paper: Nikolakaki, Sofia Maria, et al. "Mining tours and paths in activity networks." Proceedings of the 2018 World Wide Web Conference on World Wide Web. International World Wide Web Conferences Steering Committee, 2018. The introduction of our generated file "Austin_graph.stp" from the original Twitter and Flickr datasets is as follows.
 1) The items in each line in the vertex section (e.g. V 0 1.000000 0.000000 152567815 30.3960943 -97.7334045) are: V, Vertex_ID, Twitter_prize, Flickr_prize, Label, Location1, Location2 (the labels are from the original Twitter and Flickr datasets, and are like vertex IDs; these locations are real longitudes and latitudes; due to the space limitation, we only use Twitter prizes in our paper).
