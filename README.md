@@ -5,7 +5,7 @@ The introduction of these files are as follows. For any enquiry, please feel fre
 
 # Datasets
 
-The DBLP dataset is crawled by ourselves from the DBLP website. Two files can be extracted from "DBLP.zip": "DBLP_1094k_keywords.txt" and "DBLP_1094k_collaborations.txt", which contain keywords of researhchers and collaborations between researchers respectively. There are 1,094,552 researhchers and 6,911,318 collaborations in total. This dataset is not small.   <b>`You can probably find your name or your friends' names inside!`</b>
+The DBLP dataset is crawled by ourselves from the DBLP website. Two files can be extracted from "DBLP.zip": "DBLP_1094k_keywords.txt" and "DBLP_1094k_collaborations.txt", which contain keywords of researhchers and collaborations between researchers respectively. There are 1,094,552 researhchers and 6,911,318 collaborations in total.  <b>`You can probably find your name or your friends' names inside!`</b>
 
 1) DBLP_1094k_keywords.txt: The items in each line are: AuthorName, his or her keywords.
 2) DBLP_1094k_collaborations.txt: The items in each line are: Author1, Author2 (this is a collaboration; the way to calculate pairwise Jaccard distances is in our paper).
@@ -22,7 +22,7 @@ The Twitter and Flickr datasets were collected by Nikolakaki et al. for the pape
 
 The C++ source codes are in <b>bumphunting.cpp</b>. 
 
-There are more than five thousands lines of codes. <b>It is recommended to fold all the regions of codes for easy reading</b> (by pressing Ctrl+M+O in VisualStudio). 
+<b>It is recommended to fold all the regions of codes for easy reading</b> (by pressing Ctrl+M+O in VisualStudio). 
 
 Running these codes requires some header files in the Boost library: https://www.boost.org/ (e.g. #include <boost/graph/adjacency_list.hpp>) and my own YS-Graph-Library: https://github.com/YahuiSun/YS-Graph-Library (e.g. #include <subgraph_unordered_map.h>).
 
@@ -48,9 +48,9 @@ int main()
 
 }
 
-<b>There are so many experiments. You may prefer to run them seperately on a cloud.</b>
+<b>It is preferable to run these experiments seperately on a cloud.</b>
 
-To read these C++ codes in detail, I suggest to start from the "experiments" region. You may then trace the more detailed codes in other regions like "GBHA" etc. It takes some time to look through all these codes. We give some directions on these codes as follows. Again, for any enquiry, please feel free to contact Yahui SUN: https://yahuisun.com 
+To read these C++ codes in detail, it is recommended to start from the "experiments" region. More detailed codes in other regions, like "GBHA" etc., can then be traced. There are some directions on these codes as follows. Again, for any enquiry, please feel free to contact Yahui SUN: https://yahuisun.com 
 
 1) The codes of our ABHA are below "// ABHA subgraph_unordered_map"
 2) The codes of the greedy bump hunting algorithms in our paper are below "// original bump hunting algorithms"
