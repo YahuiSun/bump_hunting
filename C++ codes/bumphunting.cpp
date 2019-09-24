@@ -87,58 +87,6 @@ typedef typename pairing_heap<node_max_heaps_edge_index>::handle_type handle_max
 // some universal codes
 
 #pragma region
-void print_forest(vector<pair<vector<int>, vector<pair<int, int>>>>& trees) {
-
-	cout << "The forest info:" << endl;
-
-	for (int i = 0; i < trees.size(); i++) { // the ith tree
-
-		vector<int> included_vertices = trees[i].first;
-		vector<pair<int, int>> included_edges = trees[i].second;
-
-		cout << "Tree " << i << ": |V|=" << included_vertices.size() << " |E|=" << included_edges.size() << endl;
-
-		for (int j = 0; j < included_vertices.size(); j++) {
-			cout << "Vertex: " << included_vertices[j] << endl;
-		}
-		for (int j = 0; j < included_edges.size(); j++) {
-			int v1 = included_edges[j].first;
-			int v2 = included_edges[j].second;
-			cout << "Edge: (" << v1 << "," << v2 << ")" << endl;
-		}
-	}
-
-	cout << endl;
-}
-#pragma endregion print_forest
-
-#pragma region
-void print_forest_with_weights(vector<pair<vector<int>, vector<pair<int, int>>>>& trees, graph& input_graph) {
-
-	cout << "The forest info:" << endl;
-
-	for (int i = 0; i < trees.size(); i++) { // the ith tree
-
-		vector<int> included_vertices = trees[i].first;
-		vector<pair<int, int>> included_edges = trees[i].second;
-
-		cout << "Tree " << i << ": |V|=" << included_vertices.size() << " |E|=" << included_edges.size() << endl;
-
-		for (int j = 0; j < included_vertices.size(); j++) {
-			cout << "Vertex: " << included_vertices[j] << " nw: " << get(boost::vertex_name_t(), input_graph, included_vertices[j]) << endl;
-		}
-		for (int j = 0; j < included_edges.size(); j++) {
-			int v1 = included_edges[j].first;
-			int v2 = included_edges[j].second;
-			cout << "Edge: (" << v1 << "," << v2 << ") cost: " << get(boost::edge_weight_t(), input_graph, boost::edge(v1, v2, input_graph).first) << endl;
-		}
-	}
-
-	cout << endl;
-}
-#pragma endregion print_forest_with_weights
-
-#pragma region
 vector<pair<vector<int>, vector<pair<int, int>>>> copy_trees(vector<pair<vector<int>, vector<pair<int, int>>>>& tree) {
 	return tree;
 }
@@ -149,308 +97,6 @@ pair<vector<int>, vector<pair<int, int>>> copy_tree(pair<vector<int>, vector<pai
 	return tree;
 }
 #pragma endregion copy_tree
-
-#pragma region
-graph Generate_random_node_weighted_graph(bool connected_guarantee, int V, int E,
-	double ec_min, double ec_max, double nw_min, double nw_max) {
-
-	typedef graph::edge_descriptor Edge;
-
-	graph output_graph(V);
-
-	if (E == V * (V - 1) / 2) { // a complete graph
-		for (int i = 0; i < V; i++) {
-			int new_weight = nw_min + (rand() % (int)(nw_max - nw_min + 1)); // generate int random number 
-			boost::put(boost::vertex_name_t(), output_graph, i, new_weight); // put node weight
-			for (int j = 0; j < i; j++) {
-				int new_cost = ec_min + (rand() % (int)(ec_max - ec_min + 1)); // generate int random number 
-				boost::add_edge(i, j, new_cost, output_graph);
-			}
-		}
-		return output_graph;
-	}
-	else if (E > (double)V * (V - 1) / 2) { // int has limited precision, and cannot handle very large number
-		cout << "V = " << V << endl;
-		cout << "E = " << E << endl;
-		cout << "V * (V - 1) / 2 = " << (double)V * (V - 1) / 2 << endl;
-		cout << "Are you serious? E > V * (V - 1) / 2!" << endl;
-		getchar();
-		exit(1);
-	}
-
-
-	if (connected_guarantee == true) { // generate a connected graph
-
-		if (E < V - 1) {
-			cout << "Are you serious? E < V - 1! It cannot be connected!" << endl;
-			getchar();
-			exit(1);
-		}
-		else { // an incomplete graph
-
-			for (int i = 0; i < V; i++) {
-				int new_weight = nw_min + (rand() % (int)(nw_max - nw_min + 1)); // generate int random number 
-				boost::put(boost::vertex_name_t(), output_graph, i, new_weight); // put node weight
-			}
-
-			
-			/*generate a random spanning tree*/
-			std::vector<int> inside_V; // the included vertex
-			inside_V.insert(inside_V.end(), 0);
-			while (inside_V.size() < V) {
-				int v1 = rand() % inside_V.size();  // generate random number from [0, inside_V.size()-1]
-				int v2 = inside_V.size();
-				int new_cost = ec_min + (rand() % (int)(ec_max - ec_min + 1)); // generate int random number 
-				boost::add_edge(v1, v2, new_cost, output_graph); // a new edge
-				inside_V.insert(inside_V.end(), v2);  // a newly included vertex
-			}
-
-			while (num_edges(output_graph) < E) { // guarantee E
-
-				int v1, v2;
-				while (1 > 0) { // ensure the edge does not exist
-
-					v1 = rand() % V;  // generate random number from [0, V-1]
-					v2 = rand() % V;
-
-					if (v1 != v2) { // ensure v1 != v2 
-
-						pair<Edge, bool> ed = boost::edge(v1, v2, output_graph);
-						if (!ed.second) { // This edge does not exist!
-							break;
-						}
-
-					}
-
-				}
-
-				int new_cost = ec_min + (rand() % (int)(ec_max - ec_min + 1)); // generate int random number 
-				boost::add_edge(v1, v2, new_cost, output_graph); // a new edge
-
-			}
-		}
-	}
-	else { // generate a (dis)connected graph
-
-		for (int i = 0; i < V; i++) {
-			int new_weight = nw_min + (rand() % (int)(nw_max - nw_min + 1)); // generate int random number 
-			boost::put(boost::vertex_name_t(), output_graph, i, new_weight); // put node weight
-		}
-
-		while (num_edges(output_graph) < E) { // guarantee E
-
-			int v1, v2;
-			while (1 > 0) { // ensure the edge does not exist
-
-				v1 = rand() % V;  // generate random number from [0, V-1]
-				v2 = rand() % V;
-
-				if (v1 != v2) { // ensure v1 != v2 
-
-					pair<Edge, bool> ed = boost::edge(v1, v2, output_graph);
-					if (!ed.second) { // This edge does not exist!
-						break;
-					}
-
-				}
-
-			}
-
-			int new_cost = ec_min + (rand() % (int)(ec_max - ec_min + 1)); // generate int random number 
-			boost::add_edge(v1, v2, new_cost, output_graph); // a new edge
-
-		}
-
-	}
-
-
-	return output_graph;
-}
-#pragma endregion Generate_random_node_weighted_graph
-
-#pragma region
-vector<bool> Generate_random_query_nodes(int N, int target_queryed_num) {
-
-	vector<bool> query_nodes(N);
-	int queryed_num = 0;
-	std::vector<int> unqueryed_vertices(N); 
-	std::iota(std::begin(unqueryed_vertices), std::end(unqueryed_vertices), 0); // Fill with 0, 1, ..., N.
-
-	while (queryed_num < target_queryed_num) {
-
-		int i = 0 + (rand() % (int)(unqueryed_vertices.size())); // generate int random number
-		int v = unqueryed_vertices[i];
-		unqueryed_vertices.erase(unqueryed_vertices.begin() + i);
-		query_nodes[v] = true;
-		queryed_num++;
-
-	}
-
-	return query_nodes;
-
-}
-#pragma endregion Generate_random_query_nodes
-
-#pragma region
-void save_node_weighted_graph(string instance_name, graph& result_graph, vector<bool>& query_nodes) {
-
-	string save_name = instance_name; // save_name
-	ofstream outputFile;
-	outputFile.precision(4);
-	outputFile.setf(ios::fixed);
-	outputFile.setf(ios::showpoint);
-	outputFile.open(save_name + ".stp"); // stp file
-
-	// comments
-	outputFile << "SECTION Comments" << endl;
-	outputFile << "Name \"" << save_name << "\"" << endl;
-	outputFile << "Creator \"Yahui Sun\"" << endl;
-	outputFile << "END" << endl;
-	outputFile << endl;
-
-	// graph
-	outputFile << "SECTION Graph" << endl;
-	outputFile << "Nodes " << num_vertices(result_graph) << endl;
-	outputFile << "Edges " << num_edges(result_graph) << endl;
-	graph::out_edge_iterator eit, eend;
-	for (int i = 0; i < num_vertices(result_graph); i++) {
-		tie(eit, eend) = boost::out_edges(i, result_graph); // adjacent_vertices of 2
-		for_each(eit, eend,
-			[&result_graph, &i, &outputFile](graph::edge_descriptor it)
-		{
-			int j = boost::target(it, result_graph);
-			if (i < j) {
-				outputFile << "Edge " << i << " " << j << " " << get(boost::edge_weight_t(), result_graph, boost::edge(i, j, result_graph).first) << endl;
-			}
-		});
-	}
-	outputFile << "END" << endl;
-	outputFile << endl;
-
-	// TP
-	outputFile << "SECTION Node Weights" << endl;
-	for (int i = 0; i < num_vertices(result_graph); i++) {
-		outputFile << "NodeWeight " << i << " " << get(boost::vertex_name_t(), result_graph, i) << endl;
-	}
-	outputFile << "END" << endl;
-	outputFile << endl;
-
-	// query_nodes
-	outputFile << "SECTION query_nodes" << endl;
-	for (int i = 0; i < num_vertices(result_graph); i++) {
-		outputFile << "query_nodes " << i << " " << query_nodes[i] << endl;
-	}
-	outputFile << "END" << endl;
-	outputFile << endl;
-
-
-	outputFile << "EOF" << endl;
-
-}
-#pragma endregion save_node_weighted_graph
-
-#pragma region  
-graph read_node_weighted_graph(string file_name, vector<bool>& query_nodes) {
-
-
-	int V_num; // vertex number
-	int E_num; // edge number
-	int v1;
-	int v2;
-	double weight;
-	graph input_graph; // define the adjacency list of the input graph; there is no need to define the V_num
-	string line_content;
-	ifstream myfile(file_name); // open the file
-	if (myfile.is_open()) // if the file is opened successfully
-	{
-		while (getline(myfile, line_content)) // read file line by line
-		{
-			// parse the sting：line_content
-			list<string> Parsed_content;
-			std::string delimiter = " "; // the delimiter
-			size_t pos = 0;
-			std::string token;
-			while ((pos = line_content.find(delimiter)) != std::string::npos) {
-				// find(const string& str, size_t pos = 0) function returns the position of the first occurrence of str in the string, or npos if the string is not found.
-				token = line_content.substr(0, pos);
-				// The substr(size_t pos = 0, size_t n = npos) function returns a substring of the object, starting at position pos and of length npos
-				Parsed_content.push_back(token); // store the subtr to the list
-				line_content.erase(0, pos + delimiter.length()); // remove the front substr and the first delimiter
-			}
-			Parsed_content.push_back(line_content); // store the subtr to the list
-			if (!Parsed_content.front().compare("Nodes")) // when it's equal, compare returns 0
-			{
-				Parsed_content.pop_front();
-				V_num = atoi(Parsed_content.front().c_str()); // convert string to int
-				for (int i = 0; i < V_num; i++) {
-					boost::add_vertex(i, input_graph);
-					boost::put(boost::vertex_name_t(), input_graph, i, 0);
-				}
-			}
-			else if (!Parsed_content.front().compare("Edges"))
-			{
-				Parsed_content.pop_front();
-				E_num = atoi(Parsed_content.front().c_str());
-			}
-			else if (!Parsed_content.front().compare("Edge"))
-			{
-				Parsed_content.pop_front(); // remove E, expose v1
-				v1 = atoi(Parsed_content.front().c_str());
-				Parsed_content.pop_front(); // remove v1, expose v2
-				v2 = atoi(Parsed_content.front().c_str());
-				Parsed_content.pop_front(); // remove v2, expose weight
-				weight = stof(Parsed_content.front().c_str());
-				boost::add_edge(v1, v2, weight, input_graph); // add edge
-			}
-			else if (!Parsed_content.front().compare("NodeWeight"))
-			{
-				Parsed_content.pop_front(); // remove TP, expose v1
-				v1 = atoi(Parsed_content.front().c_str());
-				Parsed_content.pop_front(); // remove v1, expose weight
-				boost::put(boost::vertex_name_t(), input_graph, v1, stof(Parsed_content.front().c_str()));
-			}
-			else if (!Parsed_content.front().compare("query_nodes"))
-			{
-				Parsed_content.pop_front(); // remove TP, expose v1
-				v1 = atoi(Parsed_content.front().c_str());
-				Parsed_content.pop_front(); // remove v1, expose weight
-				if (stoi(Parsed_content.front().c_str()) == 1) {
-					query_nodes[v1] = true;
-				}
-				else {
-					query_nodes[v1] = false;
-				}
-			}
-		}
-
-		// check number of vertices
-		//std::cout << "|V|= " << num_vertices(input_graph);
-		//std::cout << "  |P|= " << P_num;
-		// check number of edges
-		//std::cout << "  |E|= " << num_edges(input_graph);
-		// print errors
-		if (V_num != num_vertices(input_graph)) {
-			std::cout << "Error: the number of the input vertices is not right." << endl;
-		}
-		if (E_num != num_edges(input_graph)) {
-			std::cout << "Error: the number of the input edges is not right." << endl;
-		}
-		return input_graph;
-
-		myfile.close(); //close the file
-	}
-	else
-	{
-		std::cout << "Unable to open file " << file_name << endl << "Please check the file location or file name." << endl; // throw an error message
-		getchar(); // keep the console window
-		exit(1); // end the program
-	}
-}
-#pragma endregion read_node_weighted_graph
-
-
-
-
 
 // algorithms bases
 
@@ -2188,6 +1834,7 @@ vector<pair<vector<int>, vector<pair<int, int>>>> Hegde_2015(graph& initial_grap
 
 
 
+
 // input Twitter and Flickr datasets
 
 #pragma region  
@@ -2509,24 +2156,15 @@ void generate_random_small_graphs_for_DBLP(graph& input_graph, graph& input_grou
 
 	int input_N = num_vertices(input_graph), input_skill_N = num_vertices(input_group_graph) - input_N;
 
-	//std::vector<int> unsampled_vertices(input_N);
-	//std::iota(std::begin(unsampled_vertices), std::end(unsampled_vertices), 0); // Fill with 0, 1, ..., input_N
-	//std::vector<int> sampled_vertices;
-	///*fill sampled_vertices*/
-	//while (sampled_vertices.size() < small_V) {
-	//	int ID = rand() % (int)(unsampled_vertices.size());
-	//	int v = unsampled_vertices[ID];
-	//	unsampled_vertices.erase(unsampled_vertices.begin() + ID);
-	//	sampled_vertices.insert(sampled_vertices.end(), v);
-	//}
-
 	/*fill sampled_vertices*/
-	std::vector<int> sampled_vertices(input_N);
-	std::iota(std::begin(sampled_vertices), std::end(sampled_vertices), 0); // Fill with 0, 1, ..., input_N
-	while (sampled_vertices.size() > small_V) {
-		int ID = rand() % (int)(sampled_vertices.size());
-		sampled_vertices.erase(sampled_vertices.begin() + ID);
-	}
+	//std::vector<int> sampled_vertices(input_N);
+	//std::iota(std::begin(sampled_vertices), std::end(sampled_vertices), 0); // Fill with 0, 1, ..., input_N
+	//while (sampled_vertices.size() > small_V) {
+	//	int ID = rand() % (int)(sampled_vertices.size());
+	//	sampled_vertices.erase(sampled_vertices.begin() + ID);
+	//}
+	std::vector<int> sampled_vertices(small_V);
+	std::iota(std::begin(sampled_vertices), std::end(sampled_vertices), 0); // Fill with 0, 1, ..., small_V - 1
 
 
 	std::vector<bool> vertex_included(input_N);
@@ -2601,18 +2239,20 @@ void generate_random_small_graphs_for_Twitter(graph& input_graph, std::vector<do
 
 	int input_N = num_vertices(input_graph);
 
-	std::vector<int> unsampled_vertices(input_N);
-	std::iota(std::begin(unsampled_vertices), std::end(unsampled_vertices), 0); // Fill with 0, 1, ..., input_N
+	//std::vector<int> unsampled_vertices(input_N);
+	//std::iota(std::begin(unsampled_vertices), std::end(unsampled_vertices), 0); // Fill with 0, 1, ..., input_N
+	//std::vector<int> sampled_vertices;
+	///*fill sampled_vertices*/
+	//while (sampled_vertices.size() < small_V) {
+	//	int ID = rand() % (int)(unsampled_vertices.size());
+	//	int v = unsampled_vertices[ID];
+	//	unsampled_vertices.erase(unsampled_vertices.begin() + ID);
+	//	sampled_vertices.insert(sampled_vertices.end(), v);
+	//}
+	std::vector<int> sampled_vertices(small_V);
+	std::iota(std::begin(sampled_vertices), std::end(sampled_vertices), 0); // Fill with 0, 1, ..., small_V - 1
 
-	std::vector<int> sampled_vertices;
 
-	/*fill sampled_vertices*/
-	while (sampled_vertices.size() < small_V) {
-		int ID = rand() % (int)(unsampled_vertices.size());
-		int v = unsampled_vertices[ID];
-		unsampled_vertices.erase(unsampled_vertices.begin() + ID);
-		sampled_vertices.insert(sampled_vertices.end(), v);
-	}
 	std::vector<bool> vertex_included(input_N);
 	std::vector<int> original_location_in_small(input_N); // small_location_in_original is sampled_vertices
 	for (int i = 0; i < small_V; i++) {
@@ -3945,6 +3585,13 @@ void experiment_Vary_alpha_DBLP_large(string name, graph& DBLP_graph, graph& DBL
 	double alpha_min, double alpha_max, double beta,
 	int queried_skills_num, int iteration_times, int k) {
 
+
+	double aaa = 1e8;
+
+	std::time_t now = std::time(0);
+	boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
+	boost::random::uniform_int_distribution<> dist{ (int)(alpha_min * aaa), (int)(alpha_max * aaa) };
+
 	/*change k DBLP*/
 	ofstream outputFile;
 	outputFile.precision(6);
@@ -3957,9 +3604,7 @@ void experiment_Vary_alpha_DBLP_large(string name, graph& DBLP_graph, graph& DBL
 
 		cout << "experiment_Vary_alpha_DBLP_large iteration: " << iteration << endl;
 
-		double aaa = 1e2;
-		double alpha = (double)alpha_min * aaa + (rand() % (int)(alpha_max* aaa - alpha_min * aaa + 1));
-		alpha = alpha / aaa;
+		double alpha = (double)dist(gen) / aaa;
 
 		graph DBLP_instance;
 		std::vector<bool> query_nodes;
@@ -4004,6 +3649,12 @@ void experiment_Vary_beta_DBLP_large(string name, graph& DBLP_graph, graph& DBLP
 	double alpha, double beta_min, double beta_max,
 	int queried_skills_num, int iteration_times, int k) {
 
+	double aaa = 1e8;
+
+	std::time_t now = std::time(0);
+	boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
+	boost::random::uniform_int_distribution<> dist{ (int)(beta_min * aaa), (int)(beta_max * aaa) };
+
 	/*change k DBLP*/
 	ofstream outputFile;
 	outputFile.precision(6);
@@ -4016,9 +3667,7 @@ void experiment_Vary_beta_DBLP_large(string name, graph& DBLP_graph, graph& DBLP
 
 		cout << "experiment_Vary_beta_DBLP_large iteration: " << iteration << endl;
 
-		double aaa = 1e2;
-		double beta = (double)beta_min * aaa + (rand() % (int)(beta_max* aaa - beta_min * aaa + 1));
-		beta = beta / aaa;
+		double beta = (double)dist(gen) / aaa;
 
 
 		graph DBLP_instance;
@@ -4344,6 +3993,11 @@ void experiment_Vary_alpha_Twitter(string name, graph& Twitter_graph_base, std::
 	double prize_LB, int iteration_times, int k,
 	int random_ST_try, int root_query_node_num) {
 
+	double aaa = 1e8;
+
+	std::time_t now = std::time(0);
+	boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
+	boost::random::uniform_int_distribution<> dist{ (int)(alpha_min * aaa), (int)(alpha_max * aaa) };
 
 	/*change k DBLP*/
 	ofstream outputFile;
@@ -4355,9 +4009,7 @@ void experiment_Vary_alpha_Twitter(string name, graph& Twitter_graph_base, std::
 	outputFile << "alpha,algorithm,solution,runningtime" << endl;
 	for (int iteration = 0; iteration < iteration_times; iteration++) {
 
-		double aaa = 1e2;
-		double alpha = (double) alpha_min * aaa + (rand() % (int)(alpha_max* aaa - alpha_min * aaa + 1));
-		alpha = alpha / aaa;
+		double alpha = (double)dist(gen) / aaa;
 
 		std::vector<bool> query_nodes;
 		graph DBLP_instance = generate_Twitter_instance(Twitter_graph_base, Twitter_prizes, prize_LB, query_nodes, alpha, beta);
@@ -4531,7 +4183,7 @@ void Twitter_experiment_part(string name, int iteration_times, int random_ST_try
 	int k = 100; // queried_skills_num cannot be large in small graphs
 	int k_min = 100, k_max = 150;
 	double prize_LB_min = 10, prize_LB_max = 20; // you cannot set prize_LB_min = 0, as otherwise all the nodes are queried
-	double alpha_min = 1, alpha_max = 1.5;
+	double alpha_min = 1, alpha_max = 1.1;
 	double beta_min = 0, beta_max = 1;
 
 
@@ -4541,7 +4193,7 @@ void Twitter_experiment_part(string name, int iteration_times, int random_ST_try
 		cout << "Run experiment_Vary_V_Twitter" << endl;
 
 		experiment_Vary_V_Twitter(name, Twitter_graph_base, Twitter_prizes,
-			55000, num_vertices(Twitter_graph_base), alpha, beta, prize_LB, iteration_times, k,
+			60000, num_vertices(Twitter_graph_base), alpha, beta, prize_LB, iteration_times, k,
 			random_ST_try, root_query_node_num);
 
 		cout << "End experiment_Vary_V_Twitter" << endl;
@@ -4607,14 +4259,14 @@ void DBLP_large_experiment_part(string name, int iteration_times) {
 	int queried_skills_num = 30, k = 150; // queried_skills_num cannot be large in small graphs
 	int k_min = 150, k_max = 200;
     int queried_skills_num_min = 30, queried_skills_num_max = 30;
-	double alpha_min = 1, alpha_max = 1.5;
-	double beta_min = 0, beta_max = 1;
+	double alpha_min = 1, alpha_max = 1.1;
+	double beta_min = 0.9, beta_max = 1;
 
 
 
 	if (!name.compare("Vary_V_DBLP.csv")) {
 		cout << "Run experiment_Vary_V_DBLP" << endl;
-		experiment_Vary_V_DBLP_large(name, DBLP_graph, DBLP_group_graph, 900000,
+		experiment_Vary_V_DBLP_large(name, DBLP_graph, DBLP_group_graph, 750000,
 			num_vertices(DBLP_graph), alpha, beta, queried_skills_num, iteration_times, k);
 		cout << "End experiment_Vary_V_DBLP" << endl;
 	}
@@ -4658,7 +4310,7 @@ void experiments() {
 	
 
 	std::vector<string> name;
-	int iteration_times = 2000;
+	int iteration_times = 4000;
 	int random_ST_try = 10;
 	int root_query_node_num = 10;
 
@@ -4686,8 +4338,8 @@ void experiments() {
 		//}
 		//threads.join_all();
 
-		//Twitter_experiment_part("Vary_V_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
-		Twitter_experiment_part("Vary_k_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
+		Twitter_experiment_part("Vary_V_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
+		//Twitter_experiment_part("Vary_k_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
 		//Twitter_experiment_part("Vary_Q_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
 		//Twitter_experiment_part("Vary_alpha_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
 		//Twitter_experiment_part("Vary_beta_Twitter.csv", iteration_times, random_ST_try, root_query_node_num);
@@ -4710,11 +4362,11 @@ void experiments() {
 		//}
 		//threads.join_all();
 
-		//DBLP_large_experiment_part("Vary_V_DBLP.csv", iteration_times);
+		DBLP_large_experiment_part("Vary_V_DBLP.csv", iteration_times);
 		//DBLP_large_experiment_part("Vary_k_DBLP.csv", iteration_times);
 		//DBLP_large_experiment_part("Vary_Q_DBLP.csv", iteration_times);
 		//DBLP_large_experiment_part("Vary_alpha_DBLP.csv", iteration_times);
-		DBLP_large_experiment_part("Vary_beta_DBLP.csv", iteration_times);
+		//DBLP_large_experiment_part("Vary_beta_DBLP.csv", iteration_times);
 
 
 	}
@@ -4935,7 +4587,6 @@ void original_vs_adapted() {
 
 }
 #pragma endregion original_vs_adapted
-
 
 
 // FastNewman2004 and FastVincent2008
@@ -5350,7 +5001,7 @@ bool compare_int_pair(const pair<int, int>&i, const pair<int, int>&j)
 
 void analyze_FastNewman2004_FastVincent2008(graph& DBLP_graph, graph& DBLP_group_graph, 
 	std::vector<int>& vetex_2_communityID,
-     int top_k, double alpha, int queried_skills_num) {
+     int top_k, double alpha, int queried_skills_num, string save_name) {
 
 	typedef boost::graph_traits<graph>::adjacency_iterator AdjacencyIterator;
 	AdjacencyIterator ai, a_end;
@@ -5475,17 +5126,16 @@ void analyze_FastNewman2004_FastVincent2008(graph& DBLP_graph, graph& DBLP_group
 	}
 
 
-
-
-
-
-	/*print metrics*/
-	cout << "analyze_FastNewman2004_FastVincent2008: " << endl;
-	cout << "avg_V: " << avg_V << endl;
-	cout << "avg_E: " << avg_E_in << endl;
-	cout << "avg_E_in / avg_E_out: " << avg_E_in / avg_E_out << endl;
-	cout << "avg_g_C: " << avg_g_C << endl << endl;
-
+	ofstream outputFile;
+	outputFile.precision(10);
+	outputFile.setf(ios::fixed);
+	outputFile.setf(ios::showpoint);
+	outputFile.open(save_name + ".csv");
+	outputFile << "avg_V:," << avg_V << endl;
+	outputFile << "avg_E:," << avg_E_in << endl;
+	outputFile << "avg_E_in / avg_E_out:," << avg_E_in / avg_E_out << endl;
+	outputFile << "avg_g_C:," << avg_g_C << endl << endl;
+	outputFile.close();
 
 }
 #pragma endregion analyze_FastNewman2004_FastVincent2008
@@ -5533,7 +5183,7 @@ void step_by_step_code_analyses_FastNewman2004_FastVincent2008() {
 
 #pragma region 
 void analyze_GBHA(graph& DBLP_graph, graph& DBLP_group_graph, 
-	double alpha, double beta, int k, int queried_skills_num, int try_times) {
+	double alpha, double beta, int k, int queried_skills_num, int try_times, string save_name) {
 
 
 	typedef boost::graph_traits<graph>::adjacency_iterator AdjacencyIterator;
@@ -5635,14 +5285,16 @@ void analyze_GBHA(graph& DBLP_graph, graph& DBLP_group_graph,
 
 	}
 
-
-	/*print metrics*/
-	cout << "analyze_GBHA: " << endl;
-	cout << "avg_V: " << avg_V << endl;
-	cout << "avg_E: " << avg_E_in << endl;
-	cout << "avg_E_in / avg_E_out: " << avg_E_in / avg_E_out << endl;
-	cout << "avg_g_C: " << avg_g_C << endl << endl;
-	
+	ofstream outputFile;
+	outputFile.precision(10);
+	outputFile.setf(ios::fixed);
+	outputFile.setf(ios::showpoint);
+	outputFile.open(save_name + ".csv");
+	outputFile << "avg_V:," << avg_V << endl;
+	outputFile << "avg_E:," << avg_E_in << endl;
+	outputFile << "avg_E_in / avg_E_out:," << avg_E_in / avg_E_out << endl;
+	outputFile << "avg_g_C:," << avg_g_C << endl << endl;
+	outputFile.close();
 
 }
 #pragma endregion analyze_GBHA
@@ -5663,20 +5315,21 @@ void compare_case_study() {
 
 	
 	/* analyze_GBHA*/
-	int run_GBHA = 1;
-	int k = 10, queried_skills_num = 30, try_times = 100;
+	int run_GBHA = 0;
+	int top_k = 5, queried_skills_num = 10, try_times = 10;
+	// larger top_k may include small communities that do not have enough correlated skills for Newman and Vincent
 	if (run_GBHA == 1) {
-		analyze_GBHA(DBLP_graph, DBLP_group_graph, alpha, beta, k, queried_skills_num, try_times);
+		analyze_GBHA(DBLP_graph, DBLP_group_graph, alpha, beta, top_k, queried_skills_num, try_times
+			, "compare_case_study_GBHA");
 	}
 
 
 	/* analyze_FastNewman2004*/
-	int run_FastNewman2004 = 1;
-	int top_k = 10;
+	int run_FastNewman2004 = 0;
 	if (run_FastNewman2004 == 1) {
 		std::vector<int> vetex_2_communityID = FastNewman2004(DBLP_graph);
 		analyze_FastNewman2004_FastVincent2008(DBLP_graph, DBLP_group_graph, vetex_2_communityID, top_k, alpha,
-			queried_skills_num);
+			queried_skills_num, "compare_case_study_FastNewman2004");
 	}
 	
 	/* analyze_FastVincent2008*/
@@ -5684,7 +5337,7 @@ void compare_case_study() {
 	if (run_FastVincent2008 == 1) {
 		std::vector<int> vetex_2_communityID2 = FastVincent2008(DBLP_graph);
 		analyze_FastNewman2004_FastVincent2008(DBLP_graph, DBLP_group_graph, vetex_2_communityID2, top_k, alpha,
-			queried_skills_num);
+			queried_skills_num, "compare_case_study_FastVincent2008");
 	}
 
 
@@ -5703,7 +5356,7 @@ int main()
    
    auto begin = std::chrono::high_resolution_clock::now();
 
-   visualize_DBLP_networks();
+   experiments();
 
    auto end = std::chrono::high_resolution_clock::now();
    double runningtime = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() / 1e9; // s
