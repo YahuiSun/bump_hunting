@@ -61,7 +61,3 @@ To read these C++ codes in detail, it is recommended to start from the "experime
 7) The codes of comparing other community detection algorithms with our GBHA are below "// FastNewman2004 and FastVincent2008"
 
 
-# A proof for concrete bumps
-
-In "A proof for concrete bumps.pdf", we provide a detailed proof to show that concrete bumps do not overlap with each other.
-
