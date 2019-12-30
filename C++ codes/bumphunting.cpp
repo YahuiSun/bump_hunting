@@ -36,7 +36,7 @@
 #include <boost_graph.h> 
 #include <boost_graph_print_vertices_and_edges.h> 
 #include <boost_graph_does_this_edge_exist.h> 
-#include <boost_graph_depth_first_search_a_tree_of_edges.h> 
+#include <boost_graph_breadth_first_search_a_tree_of_edges.h> 
 #include <boost_graph_ec_update_pairwise_jaccard_distance.h> 
 #include <parse_string.h> 
 #include <read_csv.h> 
@@ -556,7 +556,7 @@ vector<pair<vector<int>, vector<pair<int, int>>>> smart_spanningtrees
 #pragma endregion smart_spanningtrees
 
 #pragma region
-vector<pair<vector<int>, vector<pair<int, int>>>> depth_first_searchtrees
+vector<pair<vector<int>, vector<pair<int, int>>>> breadth_first_searchtrees
 (graph& input_graph, vector<bool>& query_nodes, int root_query_node) {
 
 	typedef boost::graph_traits<graph>::adjacency_iterator AdjacencyIterator;
@@ -595,10 +595,10 @@ vector<pair<vector<int>, vector<pair<int, int>>>> depth_first_searchtrees
 	}
 
 
-	/*depth_first_search from root_query_node; input_graph may be disconnected, and the disconnected components
+	/*breadth_first_search from root_query_node; input_graph may be disconnected, and the disconnected components
 	from i do not contain query nodes; bfs_edges do not contain edges in such components;
 	we consider this as OK, as there is no bump (positive node weight) in such components*/
-	vector<pair<int, int>> bfs_edges = boost_graph_depth_first_search_a_tree_of_edges(input_graph, root_query_node);
+	vector<pair<int, int>> bfs_edges = boost_graph_breadth_first_search_a_tree_of_edges(input_graph, root_query_node);
 	//cout << "bfs_edges.size(): " << bfs_edges.size() << endl;
 	/*remove dummy edges from bfs_edges*/
 	for (int j = 0; j < bfs_edges.size(); j++) {
@@ -644,7 +644,7 @@ vector<pair<vector<int>, vector<pair<int, int>>>> depth_first_searchtrees
 
 
 }
-#pragma endregion depth_first_searchtrees
+#pragma endregion breadth_first_searchtrees
 
 
 // ABHA subgraph_unordered_map
@@ -1482,7 +1482,7 @@ vector<pair<vector<int>, vector<pair<int, int>>>> original_BF_ST
 
 			//cout << "here" << i << endl;
 
-			vector<pair<vector<int>, vector<pair<int, int>>>> DF_trees = depth_first_searchtrees
+			vector<pair<vector<int>, vector<pair<int, int>>>> DF_trees = breadth_first_searchtrees
 			(input_graph, query_nodes, root_query_nodes[i]);
 
 			// hunt a bump
@@ -1662,7 +1662,7 @@ vector<pair<vector<int>, vector<pair<int, int>>>> adapted_BF_ST
 
 		//cout << "here" << i << endl;
 
-		vector<pair<vector<int>, vector<pair<int, int>>>> DF_trees = depth_first_searchtrees
+		vector<pair<vector<int>, vector<pair<int, int>>>> DF_trees = breadth_first_searchtrees
 		(input_graph, query_nodes, root_query_nodes[i]);
 
 		//print_forest(DF_trees);
