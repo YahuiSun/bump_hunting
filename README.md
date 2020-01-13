@@ -1,4 +1,4 @@
-# Hunting multiple bumps in graphs
+# Hunting Multiple Bumps in Graphs
 
 These files are for our paper: 
 
