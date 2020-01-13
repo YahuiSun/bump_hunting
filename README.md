@@ -2,7 +2,7 @@
 
 These files are for our paper: 
 
-<b>Yahui Sun, Jun Luo, Theodoros Lappas, Xiaokui Xiao, and Bin Cui. Hunting multiple bumps in graphs. PVLDB, 13(5): 656-669, 2020.</b>
+<b>Yahui Sun, Jun Luo, Theodoros Lappas, Xiaokui Xiao, and Bin Cui. Hunting Multiple Bumps in Graphs. PVLDB, 13(5): 656-669, 2020.</b>
 
 The introduction of these files are as follows. For any enquiry, please feel free to contact Yahui SUN: https://yahuisun.com 
 
