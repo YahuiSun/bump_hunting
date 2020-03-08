@@ -4,7 +4,7 @@ These files are for our paper:
 
 <b>Yahui Sun, Jun Luo, Theodoros Lappas, Xiaokui Xiao, and Bin Cui. Hunting Multiple Bumps in Graphs. PVLDB, 13(5): 656-669, 2020.</b>
 
-The introduction of these files are as follows. For any enquiry, please feel free to contact Yahui SUN: https://yahuisun.com 
+The introduction of these files are as follows. For any enquiry, please feel free to contact Yahui SUN: yahuisun@outlook.com 
 
 
 # Datasets
@@ -56,7 +56,7 @@ int main()
 
 <b>It is preferable to run these experiments seperately on a cloud.</b>
 
-To read these C++ codes in detail, it is recommended to start from the "experiments" region. More detailed codes in other regions, like "GBHA" etc., can then be traced. There are some directions on these codes as follows. Again, for any enquiry, please feel free to contact Yahui SUN: https://yahuisun.com 
+To read these C++ codes in detail, it is recommended to start from the "experiments" region. More detailed codes in other regions, like "GBHA" etc., can then be traced. There are some directions on these codes as follows. Again, for any enquiry, please feel free to contact Yahui SUN: yahuisun@outlook.com
 
 1) The codes of our ABHA are below "// ABHA subgraph_unordered_map"
 2) The codes of the greedy bump hunting algorithms in our paper are below "// original bump hunting algorithms"
